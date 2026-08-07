@@ -1,0 +1,9 @@
+{
+  "version": "0.1.0-dev",
+  "fimo_pvalue_threshold": 0.0001,
+  "sarp_hmm_evalue_threshold": 0.001,
+  "neighborhood_before_genes": 10,
+  "neighborhood_after_genes": 10,
+  "domain_step_status": "pending_models",
+  "embedding_step_status": "pending_models"
+}

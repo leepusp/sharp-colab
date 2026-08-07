@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Colab/runtime outputs
+results/
+tmp/
+data/uploads/
+data/normalized/
+*.zip
+
+# Large local databases
+databases/bakta_db/
+resources/embeddings/model/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
