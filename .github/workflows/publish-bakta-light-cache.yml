@@ -10,8 +10,8 @@ permissions:
   contents: write
 
 jobs:
-  publish-bakta-light-cache:
-    name: Download, validate, and publish Bakta DB light
+  publish:
+    name: Publish Bakta DB light release asset
     runs-on: ubuntu-latest
     timeout-minutes: 180
 
@@ -23,94 +23,43 @@ jobs:
       EXPECTED_MD5: 4a6e059ded39e9c5537ef4137d2f5648
 
     steps:
-      - name: Show run context
+      - name: Show context
         run: |
           set -euo pipefail
           echo "repository=${GITHUB_REPOSITORY}"
           echo "ref=${GITHUB_REF}"
           echo "ref_name=${GITHUB_REF_NAME}"
           echo "sha=${GITHUB_SHA}"
-          echo "release_tag=${RELEASE_TAG}"
 
-      - name: Download Bakta DB light from Zenodo
+      - name: Download Bakta DB light
         run: |
           set -euo pipefail
 
-          echo "Downloading ${ASSET_NAME}"
-          echo "Source: ${ZENODO_URL}"
-
-          curl -L --fail --retry 5 --retry-delay 10 --retry-all-errors \
+          curl -L --fail --retry 5 --retry-delay 10 \
             "${ZENODO_URL}" \
             -o "${ASSET_NAME}"
 
           ls -lh "${ASSET_NAME}"
 
-      - name: Validate MD5 checksum
+      - name: Validate checksums
         run: |
           set -euo pipefail
 
           echo "${EXPECTED_MD5}  ${ASSET_NAME}" > "${ASSET_NAME}.md5"
           md5sum -c "${ASSET_NAME}.md5"
 
-      - name: Compute SHA256 checksum
-        run: |
-          set -euo pipefail
-
           sha256sum "${ASSET_NAME}" > "${ASSET_NAME}.sha256"
+
+          cat "${ASSET_NAME}.md5"
           cat "${ASSET_NAME}.sha256"
 
       - name: Inspect archive
         run: |
           set -euo pipefail
 
-          echo "Archive listing preview:"
           tar -tJf "${ASSET_NAME}" | head -80
 
-      - name: Write S(H)ARP Bakta cache manifest
-        run: |
-          set -euo pipefail
-
-          SHA256_VALUE="$(awk '{print $1}' "${ASSET_NAME}.sha256")"
-          SIZE_BYTES="$(stat -c '%s' "${ASSET_NAME}")"
-          RELEASE_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${ASSET_NAME}"
-
-          cat > sharp_bakta_light_cache_manifest.json <<EOF
-          {
-            "name": "S(H)ARP Bakta DB light cache",
-            "source": "Zenodo Bakta database record 14916843",
-            "source_url": "${ZENODO_URL}",
-            "doi": "10.5281/zenodo.14916843",
-            "bakta_db_major": 6,
-            "bakta_db_minor": 0,
-            "bakta_db_type": "light",
-            "archive_name": "${ASSET_NAME}",
-            "archive_size_bytes": ${SIZE_BYTES},
-            "expected_md5": "${EXPECTED_MD5}",
-            "sha256": "${SHA256_VALUE}",
-            "github_repository": "${GITHUB_REPOSITORY}",
-            "github_release_tag": "${RELEASE_TAG}",
-            "github_release_asset": "${ASSET_NAME}",
-            "github_release_url": "${RELEASE_URL}",
-            "intended_runtime": "Google Colab",
-            "intended_use": "Bakta annotation for genome-only S(H)ARP public Colab input",
-            "public_policy": {
-              "genome_only_annotation_backend": "bakta_cached_light_db",
-              "prodigal_enabled": false,
-              "bakta_db_source": "github_release_asset",
-              "fallback_source": "zenodo_official"
-            },
-            "notes": [
-              "Do not commit this archive to the git repository.",
-              "This archive is published as a GitHub Release asset.",
-              "Colab should download the archive to /content, validate checksum, extract locally, and then run Bakta.",
-              "Do not run Bakta directly from Google Drive or a compressed archive."
-            ]
-          }
-          EOF
-
-          cat sharp_bakta_light_cache_manifest.json
-
-      - name: Create or update GitHub Release
+      - name: Create release if needed
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -119,19 +68,17 @@ jobs:
           if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
             echo "Release already exists: ${RELEASE_TAG}"
           else
-            echo "Creating release: ${RELEASE_TAG}"
-
             gh release create "${RELEASE_TAG}" \
               --repo "${GITHUB_REPOSITORY}" \
               --target "${GITHUB_SHA}" \
               --title "${RELEASE_NAME}" \
-              --notes "Cached Bakta DB light v6.0 archive for S(H)ARP public Colab runs.
+              --notes "Cached Bakta DB light v6.0 archive for S(H)ARP public Colab genome-only runs.
 
 Asset: db-light.tar.xz
-Source: Zenodo record 14916843 / DOI 10.5281/zenodo.14916843
-Purpose: avoid repeated slow Bakta DB downloads during external Colab genome-only annotation validation.
+Source: Zenodo record 14916843
+DOI: 10.5281/zenodo.14916843
 
-This release asset is not source code and must not be committed to the git repository."
+This asset is not committed to git. It is published only as a GitHub Release asset."
           fi
 
       - name: Upload release assets
@@ -144,19 +91,14 @@ This release asset is not source code and must not be committed to the git repos
             "${ASSET_NAME}" \
             "${ASSET_NAME}.md5" \
             "${ASSET_NAME}.sha256" \
-            "sharp_bakta_light_cache_manifest.json" \
             --repo "${GITHUB_REPOSITORY}" \
             --clobber
 
-      - name: Validate public release URLs
+      - name: Validate asset URL
         run: |
           set -euo pipefail
 
           URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${ASSET_NAME}"
-          MANIFEST_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/sharp_bakta_light_cache_manifest.json"
 
-          echo "Asset URL: ${URL}"
-          echo "Manifest URL: ${MANIFEST_URL}"
-
-          curl -L --fail -I "${URL}" | sed -n '1,40p'
-          curl -L --fail -I "${MANIFEST_URL}" | sed -n '1,40p'
+          echo "URL=${URL}"
+          curl -L --fail -I "${URL}" | sed -n '1,60p'

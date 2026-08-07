@@ -14,7 +14,6 @@
     "github_release_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz",
     "github_md5_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz.md5",
     "github_sha256_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz.sha256",
-    "github_manifest_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/sharp_bakta_light_cache_manifest.json",
     "zenodo_fallback_url": "https://zenodo.org/records/14916843/files/db-light.tar.xz?download=1",
     "zenodo_record": "14916843",
     "doi": "10.5281/zenodo.14916843"
@@ -22,7 +21,6 @@
   "colab": {
     "download_dir": "/content/sharp_igem_usp_brazil_2026/databases/bakta_cache",
     "extract_dir": "/content/sharp_igem_usp_brazil_2026/databases/bakta",
-    "mount_google_drive_optional": false,
     "run_from_extracted_local_content_only": true
   }
 }
