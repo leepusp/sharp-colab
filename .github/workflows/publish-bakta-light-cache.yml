@@ -72,68 +72,43 @@ jobs:
 
           SHA256_VALUE="$(awk '{print $1}' "${ASSET_NAME}.sha256")"
           SIZE_BYTES="$(stat -c '%s' "${ASSET_NAME}")"
+          RELEASE_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${ASSET_NAME}"
 
-          python - <<PY
-from pathlib import Path
-import json
-import os
-import time
+          cat > sharp_bakta_light_cache_manifest.json <<EOF
+          {
+            "name": "S(H)ARP Bakta DB light cache",
+            "source": "Zenodo Bakta database record 14916843",
+            "source_url": "${ZENODO_URL}",
+            "doi": "10.5281/zenodo.14916843",
+            "bakta_db_major": 6,
+            "bakta_db_minor": 0,
+            "bakta_db_type": "light",
+            "archive_name": "${ASSET_NAME}",
+            "archive_size_bytes": ${SIZE_BYTES},
+            "expected_md5": "${EXPECTED_MD5}",
+            "sha256": "${SHA256_VALUE}",
+            "github_repository": "${GITHUB_REPOSITORY}",
+            "github_release_tag": "${RELEASE_TAG}",
+            "github_release_asset": "${ASSET_NAME}",
+            "github_release_url": "${RELEASE_URL}",
+            "intended_runtime": "Google Colab",
+            "intended_use": "Bakta annotation for genome-only S(H)ARP public Colab input",
+            "public_policy": {
+              "genome_only_annotation_backend": "bakta_cached_light_db",
+              "prodigal_enabled": false,
+              "bakta_db_source": "github_release_asset",
+              "fallback_source": "zenodo_official"
+            },
+            "notes": [
+              "Do not commit this archive to the git repository.",
+              "This archive is published as a GitHub Release asset.",
+              "Colab should download the archive to /content, validate checksum, extract locally, and then run Bakta.",
+              "Do not run Bakta directly from Google Drive or a compressed archive."
+            ]
+          }
+          EOF
 
-asset_name = os.environ["ASSET_NAME"]
-release_tag = os.environ["RELEASE_TAG"]
-zenodo_url = os.environ["ZENODO_URL"]
-expected_md5 = os.environ["EXPECTED_MD5"]
-sha256_value = "${SHA256_VALUE}"
-size_bytes = int("${SIZE_BYTES}")
-repository = os.environ["GITHUB_REPOSITORY"]
-
-data = {
-    "name": "S(H)ARP Bakta DB light cache",
-    "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-    "source": "Zenodo Bakta database record 14916843",
-    "source_url": zenodo_url,
-    "doi": "10.5281/zenodo.14916843",
-    "bakta_db_major": 6,
-    "bakta_db_minor": 0,
-    "bakta_db_type": "light",
-    "archive_name": asset_name,
-    "archive_size_bytes": size_bytes,
-    "expected_md5": expected_md5,
-    "sha256": sha256_value,
-    "github_repository": repository,
-    "github_release_tag": release_tag,
-    "github_release_asset": asset_name,
-    "github_release_url": (
-        "https://github.com/"
-        + repository
-        + "/releases/download/"
-        + release_tag
-        + "/"
-        + asset_name
-    ),
-    "intended_runtime": "Google Colab",
-    "intended_use": "Bakta annotation for genome-only S(H)ARP public Colab input",
-    "public_policy": {
-        "genome_only_annotation_backend": "bakta_cached_light_db",
-        "prodigal_enabled": False,
-        "bakta_db_source": "github_release_asset",
-        "fallback_source": "zenodo_official"
-    },
-    "notes": [
-        "Do not commit this archive to the git repository.",
-        "This archive is published as a GitHub Release asset.",
-        "Colab should download the archive to /content, validate checksum, extract locally, and then run Bakta.",
-        "Do not run Bakta directly from Google Drive or a compressed archive."
-    ]
-}
-
-Path("sharp_bakta_light_cache_manifest.json").write_text(
-    json.dumps(data, indent=2),
-    encoding="utf-8",
-)
-
-print(json.dumps(data, indent=2))
-PY
+          cat sharp_bakta_light_cache_manifest.json
 
       - name: Create or update GitHub Release
         env:
