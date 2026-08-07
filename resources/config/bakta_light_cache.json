@@ -1,0 +1,28 @@
+{
+  "version": "0.1.0",
+  "policy": {
+    "prodigal_enabled": false,
+    "genome_only_annotation_backend": "bakta_cached_light_db",
+    "annotated_package_preferred_for_fast_runs": true
+  },
+  "bakta": {
+    "db_type": "light",
+    "db_major": 6,
+    "db_minor": 0,
+    "archive_name": "db-light.tar.xz",
+    "expected_md5": "4a6e059ded39e9c5537ef4137d2f5648",
+    "github_release_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz",
+    "github_md5_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz.md5",
+    "github_sha256_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz.sha256",
+    "github_manifest_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/sharp_bakta_light_cache_manifest.json",
+    "zenodo_fallback_url": "https://zenodo.org/records/14916843/files/db-light.tar.xz?download=1",
+    "zenodo_record": "14916843",
+    "doi": "10.5281/zenodo.14916843"
+  },
+  "colab": {
+    "download_dir": "/content/sharp_igem_usp_brazil_2026/databases/bakta_cache",
+    "extract_dir": "/content/sharp_igem_usp_brazil_2026/databases/bakta",
+    "mount_google_drive_optional": false,
+    "run_from_extracted_local_content_only": true
+  }
+}
