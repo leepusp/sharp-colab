@@ -18,3 +18,5 @@ resources/embeddings/model/
 .DS_Store
 .vscode/
 .idea/
+examples/bakta_validation/bakta_out/
+logs/bakta_validation/
