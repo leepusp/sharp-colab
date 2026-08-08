@@ -1,28 +1,26 @@
-name: Publish Bakta DB light cache
+name: Publish Bakta DB light release
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
     tags:
       - bakta-db-light-v6.0
 
 permissions:
   contents: write
 
-env:
-  RELEASE_TAG: bakta-db-light-v6.0
-  RELEASE_NAME: Bakta DB light v6.0 for S(H)ARP Colab
-  ASSET_NAME: db-light.tar.xz
-  ZENODO_URL: https://zenodo.org/records/14916843/files/db-light.tar.xz?download=1
-  EXPECTED_MD5: 4a6e059ded39e9c5537ef4137d2f5648
-
 jobs:
   publish:
     name: Publish Bakta DB light release asset
     runs-on: ubuntu-latest
     timeout-minutes: 180
+
+    env:
+      RELEASE_TAG: bakta-db-light-v6.0
+      RELEASE_NAME: Bakta DB light v6.0 for S(H)ARP Colab
+      ASSET_NAME: db-light.tar.xz
+      ZENODO_URL: https://zenodo.org/records/14916843/files/db-light.tar.xz?download=1
+      EXPECTED_MD5: 4a6e059ded39e9c5537ef4137d2f5648
 
     steps:
       - name: Show context
@@ -42,7 +40,7 @@ jobs:
             -o "${ASSET_NAME}"
           ls -lh "${ASSET_NAME}"
 
-      - name: Validate checksums
+      - name: Validate MD5 and SHA256
         run: |
           set -euo pipefail
           echo "${EXPECTED_MD5}  ${ASSET_NAME}" > "${ASSET_NAME}.md5"
@@ -55,6 +53,19 @@ jobs:
         run: |
           set -euo pipefail
           tar -tJf "${ASSET_NAME}" | head -80
+
+      - name: Write release notes
+        run: |
+          set -euo pipefail
+          cat > RELEASE_NOTES.md <<'EOF'
+Cached Bakta DB light v6.0 archive for S(H)ARP public Colab genome-only runs.
+
+Asset: db-light.tar.xz
+Source: Zenodo record 14916843
+DOI: 10.5281/zenodo.14916843
+
+This asset is not committed to git. It is published only as a GitHub Release asset.
+EOF
 
       - name: Create release if needed
         env:
@@ -69,13 +80,7 @@ jobs:
               --repo "${GITHUB_REPOSITORY}" \
               --target "${GITHUB_SHA}" \
               --title "${RELEASE_NAME}" \
-              --notes "Cached Bakta DB light v6.0 archive for S(H)ARP public Colab genome-only runs.
-
-Asset: db-light.tar.xz
-Source: Zenodo record 14916843
-DOI: 10.5281/zenodo.14916843
-
-This asset is not committed to git. It is published only as a GitHub Release asset."
+              --notes-file RELEASE_NOTES.md
           fi
 
       - name: Upload release assets
@@ -91,7 +96,7 @@ This asset is not committed to git. It is published only as a GitHub Release ass
             --repo "${GITHUB_REPOSITORY}" \
             --clobber
 
-      - name: Validate asset URL
+      - name: Validate public asset URL
         run: |
           set -euo pipefail
           URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${ASSET_NAME}"
