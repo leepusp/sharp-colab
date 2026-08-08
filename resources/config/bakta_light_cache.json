@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "policy": {
     "prodigal_enabled": false,
     "genome_only_annotation_backend": "bakta_cached_light_db",
@@ -10,7 +10,9 @@
     "db_major": 6,
     "db_minor": 0,
     "archive_name": "db-light.tar.xz",
+    "archive_size_bytes": 1344199496,
     "expected_md5": "4a6e059ded39e9c5537ef4137d2f5648",
+    "expected_sha256": "dab28b58fbf51fde4b72793c1edf7a9de6530cfb501d2dd5a72b16b8ecb4c705",
     "github_release_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz",
     "github_md5_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz.md5",
     "github_sha256_url": "https://github.com/leepusp/sharp-colab/releases/download/bakta-db-light-v6.0/db-light.tar.xz.sha256",
