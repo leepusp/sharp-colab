@@ -1,5 +1,13 @@
 # S(H)ARP — Streptomyces Hidden Antibiotic Regulated Pathways
 
+## Run in Google Colab
+
+Open the public S(H)ARP notebook directly in Google Colab:
+
+[![Open S(H)ARP in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/leepusp/sharp-colab/blob/main/notebooks/sharp_public_colab.ipynb)
+
+The notebook loads public S(H)ARP resources from this GitHub repository and writes a complete HTML/ZIP results package at the end of the run.
+
 S(H)ARP is a Colab-oriented workflow developed by iGEM USP-Brazil 2026 for detecting candidate regulatory regions associated with biosynthetic gene clusters in Streptomyces genomes.
 
 ## Public workflow
