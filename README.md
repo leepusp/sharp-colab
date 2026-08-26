@@ -4,7 +4,7 @@
 
 Open the public S(H)ARP notebook directly in Google Colab:
 
-[![Open S(H)ARP in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/leepusp/sharp-colab/blob/main/notebooks/sharp_public_colab.ipynb)
+[![Open S(H)ARP in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/leepusp/sharp-colab/blob/main/notebooks/sharp_colab.ipynb)
 
 The notebook loads public S(H)ARP resources from this GitHub repository and writes a complete HTML/ZIP results package at the end of the run.
 
